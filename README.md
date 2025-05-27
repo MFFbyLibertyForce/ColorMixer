@@ -1,6 +1,6 @@
 # Smart Color Mixer
 
-[Try it Live](https://mffbylibertyforce.github.io/ColorMixer/)
+[Try it Live](https://nametakenk.github.io/ColorMixer/)
 
 Smart Color Mixer is a web-based application that helps users combine multiple base colors to approximate a target color.  
 The tool uses a Beam Search algorithm for efficient and accurate color mixing, allowing real-time feedback and adjustable options.
@@ -44,4 +44,4 @@ The tool uses a Beam Search algorithm for efficient and accurate color mixing, a
 
 MIT License  
 Copyright 2024  
-[mffbylibertyforce](https://github.com/mffbylibertyforce)
+[nametakenk](https://github.com/nametakenk)

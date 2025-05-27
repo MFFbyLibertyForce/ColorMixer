@@ -13,7 +13,7 @@
     <div class="palette-section">
       <div class="section-title">🎨 Colors</div>
       <div class="usage-tip">
-        원하는 색을 추가하거나 조합해보세요. 마우스로 색상을 클릭하면 수정할 수 있고, 슬라이더로 비율을 조절할 수 있어요.
+        Add or combine colors as you like. Click a color circle to edit, and use sliders to adjust weight.
       </div>
       <div id="color-groups">
         <div class="color-group-title">Preset - RGB</div>
@@ -29,30 +29,29 @@
         <div id="group-custom" class="color-group"></div>
       </div>
       <div class="button-row">
-        <button onclick="addColorCircle()">➕ 색상 추가</button>
-        <button onclick="resetColors()">🔄 초기화</button>
+        <button onclick="addColorCircle()">➕ Add Color</button>
+        <button onclick="resetColors()">🔄 Reset</button>
       </div>
     </div>
 
     <div class="mixing-section">
       <div class="section-title">🔧 Mixing Result</div>
       <div class="usage-tip">
-        목표 색상을 입력하고 <strong>Get Mix</strong>를 눌러 가장 가까운 조합을 찾아보세요!
+        Enter a target color and click <strong>Get Mix</strong> to find the closest match.
       </div>
       <div class="input-row">
         🎯 Target Color:
         <input type="text" id="targetColor" value="#abcdef" placeholder="#RRGGBB or 255,255,255" maxlength="20" />
         <button onclick="findBestMix()">🎯 Get Mix</button>
-		
       </div>
       <div class="button-row">
-		  Step:
-		  <label><input type="radio" name="step" value="1"> 1</label>
-		  <label><input type="radio" name="step" value="3"> 3</label>
-		  <label><input type="radio" name="step" value="5" checked> 5</label>
-		  <label><input type="radio" name="step" value="7"> 7</label>
-		  <label><input type="radio" name="step" value="10"> 10</label>
-		</div>
+        Step:
+        <label><input type="radio" name="step" value="1"> 1</label>
+        <label><input type="radio" name="step" value="3"> 3</label>
+        <label><input type="radio" name="step" value="5" checked> 5</label>
+        <label><input type="radio" name="step" value="7"> 7</label>
+        <label><input type="radio" name="step" value="10"> 10</label>
+      </div>
       <div class="button-row">
         Mode:
         <label><input type="radio" name="mode" value="rgb" checked> RGB</label>
@@ -61,7 +60,7 @@
         <label><input type="radio" name="mode" value="all"> All</label>
       </div>
       <div class="button-row">
-        <button onclick="saveMix()">💾 저장하기</button>
+        <button onclick="saveMix()">💾 Save</button>
       </div>
       <div class="result-section">
         <div class="color-box">
@@ -71,7 +70,7 @@
         <div class="color-box">
           <div class="result-box" id="resultBox"></div>
           <div class="info" id="resultText">#000000<br>RGB(0, 0, 0)<br><em>Unknown</em></div>
-          <div class="info" id="similarityText">유사도: -</div>
+          <div class="info" id="similarityText">Similarity: -</div>
           <div class="ratio-list" id="ratioList"></div>
         </div>
       </div>
@@ -90,8 +89,8 @@
       <input type="text" id="colorInput" placeholder="#RRGGBB or 255,255,255" />
       <input type="color" id="colorPreview" />
       <div class="button-row">
-        <button onclick="applyColor()">✅ 적용</button>
-        <button onclick="closeModal()">❌ 취소</button>
+        <button onclick="applyColor()">✅ Apply</button>
+        <button onclick="closeModal()">❌ Cancel</button>
       </div>
     </div>
   </div>

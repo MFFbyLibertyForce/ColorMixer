@@ -2,70 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Smart Color Mixer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <title>Three.js Module Load</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; }
+    canvas { display: block; }
+    #warning { position: absolute; color: white; top: 10px; left: 10px; font-family: sans-serif; }
+  </style>
 </head>
 <body>
-  <h1 style="text-align:center;">🎯 Smart Color Mixer</h1>
-  <div class="container">
-    <div class="palette-section">
-      <div class="section-title">Colors</div>
-      <div id="color-circles"></div>
-      <div class="button-row">
-        <button onclick="addColorCircle()">➕ 색상 추가</button>
-        <button onclick="resetColors()">🔄 초기화</button>
-      </div>
-    </div>
-    <div class="mixing-section">
-      <div class="section-title">Mixing Result</div>
-      <div style="margin-bottom:10px;">
-        🎯 Target Color:
-        <input type="text" id="targetColor" value="#abcdef" placeholder="#RRGGBB or 255,255,255" maxlength="20" />
-        <button onclick="findBestMix()">🎯 Get Mix</button>
-      </div>
-      <div class="button-row">
-        Step:
-        <label><input type="radio" name="step" value="1"> 1</label>
-        <label><input type="radio" name="step" value="5" checked> 5</label>
-        <label><input type="radio" name="step" value="10"> 10</label>
-      </div>
-	  <!-- Mixing Controls (기존 위치에 아래 코드 삽입) -->
-      <div class="button-row">
-        Mode:
-        <label><input type="radio" name="mode" value="rgb" checked> RGB</label>
-        <label><input type="radio" name="mode" value="hsv"> HSV</label>
-        <label><input type="radio" name="mode" value="none"> None</label>
-        <label><input type="radio" name="mode" value="all"> All</label>
-      </div>
-      <div class="result-section">
-        <div class="color-box">
-          <div class="result-box" id="targetBox" style="background: #abcdef;"></div>
-          <div class="info" id="targetText">Target: #ABCDEF</div>
-        </div>
-        <div class="color-box">
-          <div class="result-box" id="resultBox"></div>
-          <div class="info" id="resultText">#000000<br>RGB(0, 0, 0)</div>
-          <div class="info" id="similarityText">유사도: -</div>
-          <div class="ratio-list" id="ratioList"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="warning">🎨 로딩 중... WebGL이 안 보이면 브라우저를 최신으로 업데이트하거나 get.webgl.org 방문</div>
+  <canvas id="scene"></canvas>
 
-  <!-- Modal -->
-  <div id="colorPickerModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <label>HEX or RGB: </label>
-      <input type="text" id="colorInput" placeholder="#RRGGBB or 255,255,255" />
-      <input type="color" id="colorPreview" />
-      <div class="button-row">
-        <button onclick="applyColor()">✅ 적용</button>
-        <button onclick="closeModal()">❌ 취소</button>
-      </div>
-    </div>
-  </div>
+  <!-- ✅ ES Module 방식으로 로딩 -->
+  <script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.150.0/build/three.module.js';
 
-  <script src="script.js"></script>
+    const canvas = document.querySelector('#scene');
+    const renderer = new THREE.WebGLRenderer({ canvas });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 3;
+
+    const geometry = new THREE.SphereGeometry(1, 32, 32);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ccff, wireframe: true });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      sphere.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
 </body>
 </html>

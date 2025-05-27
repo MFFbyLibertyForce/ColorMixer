@@ -1,112 +1,87 @@
 body {
-  background: linear-gradient(135deg, #1f1c2c, #928dab);
-  color: #f0f0f0;
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 2rem;
-  min-height: 100vh;
-  box-sizing: border-box;
+  background: radial-gradient(circle at center, #222, #111);
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+  overflow-x: hidden;
 }
 
-h1 {
+.animated-title {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #ffffff;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pulse 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
 
 .container {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: 2rem;
   justify-content: center;
 }
 
-.palette-section, .mixing-section {
-  flex: 1 1 400px;
+.palette-section,
+.mixing-section,
+.saved-section {
+  flex: 1 1 360px;
   padding: 1.5rem;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-title {
   font-size: 1.5rem;
-  font-weight: bold;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 0.3rem;
+  text-align: center;
+}
+
+.usage-tip {
+  font-size: 0.9rem;
+  color: #ccc;
   margin-bottom: 1rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  padding-bottom: 0.5rem;
+  font-style: italic;
 }
 
-.button-row {
-  margin-top: 15px;
-  text-align: center;
-}
-
-button {
-  padding: 10px 16px;
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
-  color: white;
+.color-group-title {
   font-weight: bold;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  margin: 6px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.1s ease;
+  margin-top: 1.2rem;
+  margin-bottom: 0.4rem;
+  padding-left: 8px;
+  border-left: 4px solid #888;
+  color: #ffd;
 }
 
-button:hover {
-  transform: translateY(-2px);
-}
-
-.result-section {
+.color-group {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  align-items: flex-start;
-  margin-top: 30px;
   flex-wrap: wrap;
-}
-
-.color-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.result-box {
-  width: 150px;
-  height: 150px;
-  border-radius: 20px;
-  border: 3px solid #888;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.info {
-  margin-top: 12px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.ratio-list {
-  font-size: 14px;
-  margin-top: 8px;
-  line-height: 1.6;
-  max-width: 300px;
-  text-align: left;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
 .color-circle {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  margin: 8px;
+  transition: transform 0.3s ease;
 }
 
 .color-ball {
@@ -115,7 +90,12 @@ button:hover {
   border-radius: 50%;
   border: 2px solid #ccc;
   cursor: pointer;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+.color-ball:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
 
 .counter-controls {
@@ -140,35 +120,129 @@ button:hover {
   font-weight: bold;
 }
 
-/* Modal */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.6);
+.delete-btn {
+  font-size: 14px;
+  color: #f88;
+  margin-top: 4px;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+}
+.delete-btn:hover {
+  text-decoration: underline;
+}
+
+.button-row {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+button {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8f94fb, #4e54c8);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.result-section {
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 25px;
 }
 
-.modal-content {
-  background: #2a2a2a;
-  padding: 20px;
-  border-radius: 10px;
+.color-box {
   text-align: center;
-  color: white;
-  box-shadow: 0 0 20px black;
 }
 
-.modal-content input[type=text] {
-  width: 200px;
-  margin-bottom: 10px;
+.result-box {
+  width: 150px;
+  height: 150px;
+  border-radius: 16px;
+  border: 3px solid #888;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.6s ease;
+}
+
+.info {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.ratio-list {
+  font-size: 13px;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+.saved-list {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.saved-item {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  transition: all 0.2s ease;
+}
+
+.saved-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.saved-item button {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* 추가 스타일 */
+.mix-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+
+.saved-name {
+  flex-grow: 1;
+  min-width: 100px;
   padding: 6px;
   border-radius: 6px;
-  border: none;
-  outline: none;
+  border: 1px solid #ccc;
   font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
 }
+

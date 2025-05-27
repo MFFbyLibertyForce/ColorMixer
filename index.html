@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>3D Color Mixer (GitHub Pages)</title>
+  <title>3D Color Mixer (GitHub Pages Safe)</title>
   <style>
     html, body {
       margin: 0;
       overflow: hidden;
       background: #000;
       font-family: sans-serif;
-      color: white;
     }
     #ui {
       position: absolute;
       top: 10px;
       left: 10px;
       z-index: 10;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       padding: 12px;
       border-radius: 10px;
+      color: white;
     }
     .row {
       margin-bottom: 10px;
@@ -48,7 +48,7 @@
   import { OrbitControls } from 'https://unpkg.com/three@0.150.0/examples/jsm/controls/OrbitControls.js';
 
   const canvas = document.getElementById('scene');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();

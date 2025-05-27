@@ -22,7 +22,7 @@ The tool uses a Beam Search algorithm for efficient and accurate color mixing, a
 
 ## How to Use
 
-1. Open the app at [https://mffbylibertyforce.github.io/ColorMixer/](https://mffbylibertyforce.github.io/ColorMixer/)
+1. Open the app at [https://nametakenk.github.io/ColorMixer/](https://nametakenk.github.io/ColorMixer/)
 2. Add or edit preset/custom colors
 3. Enter your desired target color
 4. Select a step size and click "Get Mix"

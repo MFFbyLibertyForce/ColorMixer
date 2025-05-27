@@ -40,16 +40,6 @@ The tool uses a Beam Search algorithm for efficient and accurate color mixing, a
 
 ---
 
-## Project Structure
-
-'''ColorMixer/
-├── index.html      # HTML layout
-├── style.css       # UI styles 
-├── script.js       # Application logic 
-└── README.md       # Documentation'''
-
----
-
 ## License
 
 MIT License  

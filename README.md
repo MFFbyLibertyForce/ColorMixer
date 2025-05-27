@@ -1,28 +1,53 @@
-# 🎨 Smart Color Mixer
+# Smart Color Mixer
 
-[🔗 사용해보기](https://mffbylibertyforce.github.io/ColorMixer/)
+[Try it Live](https://mffbylibertyforce.github.io/ColorMixer/)
 
-**Smart Color Mixer**는 사용자가 다양한 색상을 조합하여 목표 색상(Target Color)에 가장 가까운 색을 찾아주는 웹 앱입니다.  
-Beam Search 알고리즘 기반의 빠르고 정확한 색 혼합 시스템을 제공합니다.
-
----
-
-## ✨ 주요 기능
-
-- ✅ RGB / CMY / WB / Custom 색상 조합
-- 🎯 HEX 또는 RGB로 Target Color 입력
-- 🧮 혼합 비율 계산 + 유사도(%) 비교
-- ⚙️ Step 설정 (1, 3, 5, 7, 10) 및 몫 표시
-- 🧠 Beam Search 기반 빠른 색상 최적화
-- 💾 조합 저장 및 이름 지정 가능
-- 📦 저장된 조합 불러오기/삭제 기능
-- 📊 Progress Bar로 혼합 계산 중 시각화
+Smart Color Mixer is a web-based application that helps users combine multiple base colors to approximate a target color.  
+The tool uses a Beam Search algorithm for efficient and accurate color mixing, allowing real-time feedback and adjustable options.
 
 ---
 
-## 🚀 시작하기
+## Features
 
-### 1. 페이지 접속
+- Supports RGB, CMY, WB, and custom colors
+- Accepts target color input in HEX (#RRGGBB) or RGB (255,255,255)
+- Adjustable step sizes: 1, 3, 5, 7, 10
+- Displays mix ratios and per-step quotients
+- Fast optimization using Beam Search
+- Allows saving, editing, and deleting named mix combinations
+- Visual progress indicator during calculation
+- LocalStorage-based persistence (no backend required)
 
-```text
-https://mffbylibertyforce.github.io/ColorMixer/
+---
+
+## How to Use
+
+1. Open the app at [https://mffbylibertyforce.github.io/ColorMixer/](https://mffbylibertyforce.github.io/ColorMixer/)
+2. Add or edit preset/custom colors
+3. Enter your desired target color
+4. Select a step size and click "Get Mix"
+5. View the results including closest match, similarity percentage, and weight distribution
+6. Save the mix with a custom name if desired
+
+---
+
+## Technology Stack
+
+- HTML, CSS, JavaScript (Vanilla)
+- TheColorAPI (for optional color name lookup)
+- Beam Search algorithm
+- Browser LocalStorage for saved data
+
+---
+
+## Project Structure
+
+ColorMixer/ ├── index.html      # HTML layout ├── style.css       # UI styles ├── script.js       # Application logic └── README.md       # Documentation
+
+---
+
+## License
+
+MIT License  
+Copyright 2024  
+[mffbylibertyforce](https://github.com/mffbylibertyforce)

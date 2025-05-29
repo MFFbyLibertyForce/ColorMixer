@@ -4,11 +4,15 @@
   <meta charset="UTF-8" />
   <title>Smart Color Mixer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <!-- index.html <head> 내부에 추가 -->
+
   <script src="script.js" defer></script>
 </head>
 <body>
-  <h1 class="animated-title">🌈 Smart Color Mixer</h1>
+<canvas id="bg-canvas"></canvas>
+  <h1 class="animated-title">Smart Color Mixer</h1>
   <div class="container">
     <div class="palette-section">
       <div class="section-title">🎨 Colors</div>
@@ -16,6 +20,7 @@
         Add or combine colors as you like. Click a color circle to edit, and use sliders to adjust weight.
       </div>
 
+		
       <!-- 🎯 Palette Filter -->
       <div class="button-row" id="paletteFilter">
         Palette:
@@ -90,7 +95,24 @@
         </div>
       </div>
     </div>
+<!-- 🎯 Color Suggestions -->
+<div class="suggestion-section">
+  <h2 class="section-title">🎯 Color Suggestions</h2>
+  <input type="color" id="colorPicker" value="#72DEDC" />
+  <button onclick="generateSuggestions()">Suggest</button>
 
+  <div id="results" class="suggestion-results"></div>
+
+  <div class="sub-section">
+    <h3>🌈 Gradient Suggestions</h3>
+    <div id="gradientResults" class="suggestion-results"></div>
+  </div>
+
+  <div class="sub-section">
+    <h3>🔺 Harmonic Set</h3>
+    <div id="harmonicResults" class="suggestion-results"></div>
+  </div>
+</div>
     <div class="saved-section">
       <div class="section-title">📁 Saved Mixes</div>
       <div id="savedMixes" class="saved-list"></div>
@@ -100,6 +122,8 @@
   <button onclick="document.getElementById('uploadMixFile').click()">📁 Load Mixes</button>
 </div>
     </div>
+	
+	
   </div>
 </body>
 </html>

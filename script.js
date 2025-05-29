@@ -10,6 +10,113 @@ document.querySelectorAll('input[name="palette"]').forEach(radio => {
   });
 });
 
+// Nebula 배경 애니메이션 WebGL 코드
+const canvas = document.getElementById("bg-canvas");
+const gl = canvas.getContext("webgl");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Shader 소스 코드
+const vsSource = `
+  attribute vec2 position;
+  void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+  }
+`;
+
+const fsSource = `
+  precision mediump float;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+  uniform vec3 u_color;
+
+  float rand(vec2 co){
+    return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
+  }
+
+  float noise(vec2 p){
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    float a = rand(i);
+    float b = rand(i + vec2(1.0, 0.0));
+    float c = rand(i + vec2(0.0, 1.0));
+    float d = rand(i + vec2(1.0, 1.0));
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(a, b, u.x) +
+           (c - a)* u.y * (1.0 - u.x) +
+           (d - b) * u.x * u.y;
+  }
+
+  void main() {
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec2 p = uv * 3.0;
+    float t = u_time * 0.05;
+    float n = noise(p + vec2(t, -t));
+    vec3 col = u_color * n * 1.5;
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+// Shader 초기화
+function createShader(type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  return shader;
+}
+
+const vs = createShader(gl.VERTEX_SHADER, vsSource);
+const fs = createShader(gl.FRAGMENT_SHADER, fsSource);
+const program = gl.createProgram();
+gl.attachShader(program, vs);
+gl.attachShader(program, fs);
+gl.linkProgram(program);
+gl.useProgram(program);
+
+// 사각형 버퍼
+const buffer = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+  -1, -1, 1, -1, -1, 1,
+  -1, 1, 1, -1, 1, 1
+]), gl.STATIC_DRAW);
+
+const pos = gl.getAttribLocation(program, "position");
+gl.enableVertexAttribArray(pos);
+gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+// Uniform 설정
+const uTime = gl.getUniformLocation(program, "u_time");
+const uRes = gl.getUniformLocation(program, "u_resolution");
+const uColor = gl.getUniformLocation(program, "u_color");
+
+// 현재 색상 (r, g, b 범위: 0~1)
+let currentColor = [0.5, 0.5, 0.5];
+let targetColor = [0.5, 0.5, 0.5];
+
+// 외부에서 색상 갱신용 함수
+function updateShaderTarget(r, g, b) {
+  targetColor = [r, g, b];
+}
+
+// 애니메이션 루프
+function animateShader(time) {
+  gl.viewport(0, 0, canvas.width, canvas.height);
+  gl.uniform1f(uTime, time * 0.001);
+  gl.uniform2f(uRes, canvas.width, canvas.height);
+
+  // 색상 부드럽게 전환
+  for (let i = 0; i < 3; i++) {
+    currentColor[i] += (targetColor[i] - currentColor[i]) * 0.05;
+  }
+
+  gl.uniform3f(uColor, ...currentColor);
+  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  requestAnimationFrame(animateShader);
+}
+
+requestAnimationFrame(animateShader);
+
 const DEFAULT_COLORS = [
   { r: 255, g: 0, b: 0, type: "rgb" },
   { r: 0, g: 255, b: 0, type: "rgb" },
@@ -178,6 +285,8 @@ function updateMix() {
   const resultText = document.getElementById("resultText");
   const similarityText = document.getElementById("similarityText");
   const ratioList = document.getElementById("ratioList");
+  
+  
 
   if (total === 0) {
     resultBox.style.background = "#000000";
@@ -196,6 +305,7 @@ function updateMix() {
 
   resultBox.style.background = hex;
   resultText.innerHTML = `${hex.toUpperCase()}<br>RGB(${Math.round(avg.r)}, ${Math.round(avg.g)}, ${Math.round(avg.b)})<br><em>Loading...</em>`;
+
 
   fetchColorNameFromAPI(hex).then(name => {
     resultText.innerHTML = `${hex.toUpperCase()}<br>RGB(${Math.round(avg.r)}, ${Math.round(avg.g)}, ${Math.round(avg.b)})<br><em>${name}</em>`;
@@ -344,12 +454,17 @@ function renderSavedMixes() {
 
     const loadBtn = document.createElement("button");
     loadBtn.textContent = "📥";
-    loadBtn.onclick = () => {
-      targetColorInput.value = rgbToHex(item.target);
-      circles = item.mix.map(c => ({ ...c }));
-      render();
-      updateTargetBox();
-    };
+
+	
+	loadBtn.onclick = () => {
+  targetColorInput.value = rgbToHex(item.target);
+  circles = item.mix.map(c => ({ ...c }));
+  render();
+  updateTargetBox();
+
+  // ✅ 배경 WebGL 애니메이션 컬러 업데이트
+  updateShaderTarget(item.target.r / 255, item.target.g / 255, item.target.b / 255);
+};
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "🗑";
@@ -370,6 +485,7 @@ function renderSavedMixes() {
     list.appendChild(div);
   });
 }
+
 function findBestMix() {
   const step = parseInt(stepSlider.value);
   const target = parseColor(targetColorInput.value.trim());
@@ -450,6 +566,35 @@ function findBestMix() {
 
   render();
   updateMix();
+
+  const resultColor = {
+    r: Math.round(best.r / best.total),
+    g: Math.round(best.g / best.total),
+    b: Math.round(best.b / best.total)
+  };
+
+  // Shader에 전달
+  updateShaderTarget(resultColor.r / 255, resultColor.g / 255, resultColor.b / 255);
+  
+  
+  // HEX 변환
+const hex = rgbToHex(resultColor);
+//updateAISuggestionBackground(hex);
+
+// ✅ Suggestion section color picker도 업데이트
+  const colorPicker = document.querySelector(".suggestion-section input[type='color']");
+  if (colorPicker) {
+    colorPicker.value = hex;
+  }
+}
+
+// HEX → RGB 변환 유틸리티
+function hexToRgbNormalized(hex) {
+  const bigint = parseInt(hex.replace("#", ""), 16);
+  const r = ((bigint >> 16) & 255) / 255;
+  const g = ((bigint >> 8) & 255) / 255;
+  const b = (bigint & 255) / 255;
+  return [r, g, b];
 }
 
 function downloadMixes() {
@@ -482,8 +627,123 @@ function uploadMixes(event) {
   };
   reader.readAsText(file);
 }
+
+function generateSuggestions() {
+  const baseColor = document.getElementById("colorPicker").value.trim();
+  const rgb = hexToRgb(baseColor);
+  if (!rgb) {
+    alert("❗ 유효하지 않은 HEX 색상입니다.");
+    return;
+  }
+
+  const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+  // 🎯 기본 추천 (보색 + 유사색)
+  const comp = hslToHex((hsl.h + 180) % 360, hsl.s, hsl.l);
+  const analog1 = hslToHex((hsl.h + 30) % 360, hsl.s, hsl.l);
+  const analog2 = hslToHex((hsl.h + 330) % 360, hsl.s, hsl.l);
+
+  const results = document.getElementById("results");
+  results.innerHTML = `
+    ${createSwatch(baseColor, "Base")}
+    ${createSwatch(comp, "Complementary")}
+    ${createSwatch(analog1, "Analogous 1")}
+    ${createSwatch(analog2, "Analogous 2")}
+  `;
+
+  // 🌈 4단계 Gradient Suggestions (Lightness 조정)
+  const l1 = Math.max(hsl.l - 0.3, 0);
+  const l2 = Math.max(hsl.l - 0.1, 0);
+  const l3 = Math.min(hsl.l + 0.1, 1);
+  const l4 = Math.min(hsl.l + 0.3, 1);
+
+  const g1 = hslToHex(hsl.h, hsl.s, l1);
+  const g2 = hslToHex(hsl.h, hsl.s, l2);
+  const g3 = hslToHex(hsl.h, hsl.s, l3);
+  const g4 = hslToHex(hsl.h, hsl.s, l4);
+
+  const gradientResults = document.getElementById("gradientResults");
+  gradientResults.innerHTML = `
+    ${createSwatch(g1, "Darker")}
+    ${createSwatch(g2, "Dark")}
+    ${createSwatch(g3, "Light")}
+    ${createSwatch(g4, "Lighter")}
+  `;
+
+  // 🔺 Harmonic Set (Triadic & Tetradic)
+  const triadic1 = hslToHex((hsl.h + 120) % 360, hsl.s, hsl.l);
+  const triadic2 = hslToHex((hsl.h + 240) % 360, hsl.s, hsl.l);
+  const tetradic1 = hslToHex((hsl.h + 90) % 360, hsl.s, hsl.l);
+  const tetradic2 = hslToHex((hsl.h + 270) % 360, hsl.s, hsl.l);
+
+  const harmonicResults = document.getElementById("harmonicResults");
+  harmonicResults.innerHTML = `
+    ${createSwatch(baseColor, "Base")}
+    ${createSwatch(triadic1, "Triadic 1")}
+    ${createSwatch(triadic2, "Triadic 2")}
+    ${createSwatch(tetradic1, "Tetradic 1")}
+    ${createSwatch(tetradic2, "Tetradic 2")}
+  `;
+}
+
+function createSwatch(color, label) {
+  return `
+    <div class="color-swatch">
+      <div class="swatch-color" style="background:${color}"></div>
+      <div>${label}<br><strong>${color.toUpperCase()}</strong></div>
+    </div>
+  `;
+}
+
+function hexToRgb(hex) {
+  const bigint = parseInt(hex.slice(1), 16);
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255
+  };
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h *= 60;
+  }
+  return { h, s, l };
+}
+
+function hslToHex(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+  const m = l - c / 2;
+  let r, g, b;
+
+  if (h < 60)      [r, g, b] = [c, x, 0];
+  else if (h < 120)[r, g, b] = [x, c, 0];
+  else if (h < 180)[r, g, b] = [0, c, x];
+  else if (h < 240)[r, g, b] = [0, x, c];
+  else if (h < 300)[r, g, b] = [x, 0, c];
+  else             [r, g, b] = [c, 0, x];
+
+  return "#" + [r, g, b].map(v => Math.round((v + m) * 255)
+    .toString(16).padStart(2, "0")).join("");
+}
+
 window.addEventListener("load", () => {
   resetColors();
   updateTargetBox();
   renderSavedMixes();
 });
+

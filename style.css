@@ -60,6 +60,14 @@ body {
   font-style: italic;
 }
 
+#paletteFilter {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-weight: bold;
+}
+
 .color-group-title {
   font-weight: bold;
   margin-top: 1.2rem;
@@ -226,7 +234,6 @@ button:hover {
   border-radius: 6px;
 }
 
-/* 추가 스타일 */
 .mix-preview {
   width: 24px;
   height: 24px;
@@ -245,4 +252,3 @@ button:hover {
   background-color: rgba(255, 255, 255, 0.05);
   color: white;
 }
-

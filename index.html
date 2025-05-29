@@ -15,6 +15,18 @@
       <div class="usage-tip">
         Add or combine colors as you like. Click a color circle to edit, and use sliders to adjust weight.
       </div>
+
+      <!-- 🎯 Palette Filter -->
+      <div class="button-row" id="paletteFilter">
+        Palette:
+        <label><input type="radio" name="palette" value="rgb" checked> RGB</label>
+        <label><input type="radio" name="palette" value="cmy"> CMY</label>
+		<label><input type="radio" name="palette" value="cmy-mrhobby"> CMY-Mr.hobby</label>
+        <label><input type="radio" name="palette" value="wb"> WB</label>
+        <label><input type="radio" name="palette" value="none"> None</label>
+        <label><input type="radio" name="palette" value="all"> All</label>
+      </div>
+
       <div id="color-groups">
         <div class="color-group-title">Preset - RGB</div>
         <div id="group-rgb" class="color-group"></div>
@@ -32,6 +44,19 @@
         <button onclick="addColorCircle()">➕ Add Color</button>
         <button onclick="resetColors()">🔄 Reset</button>
       </div>
+
+      <!-- Color Picker Modal -->
+      <div id="colorPickerModal" class="modal" style="display:none;">
+        <div class="modal-content">
+          <label>HEX or RGB: </label>
+          <input type="text" id="colorInput" placeholder="#RRGGBB or 255,255,255" />
+          <input type="color" id="colorPreview" />
+          <div class="button-row">
+            <button onclick="applyColor()">✅ Apply</button>
+            <button onclick="closeModal()">❌ Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="mixing-section">
@@ -46,18 +71,8 @@
       </div>
       <div class="button-row">
         Step:
-        <label><input type="radio" name="step" value="1"> 1</label>
-        <label><input type="radio" name="step" value="3"> 3</label>
-        <label><input type="radio" name="step" value="5" checked> 5</label>
-        <label><input type="radio" name="step" value="7"> 7</label>
-        <label><input type="radio" name="step" value="10"> 10</label>
-      </div>
-      <div class="button-row">
-        Mode:
-        <label><input type="radio" name="mode" value="rgb" checked> RGB</label>
-        <label><input type="radio" name="mode" value="hsv"> CMY</label>
-        <label><input type="radio" name="mode" value="none"> Only WB</label>
-        <label><input type="radio" name="mode" value="all"> All</label>
+        <input type="range" id="stepSlider" min="1" max="10" value="5" />
+        <span id="stepValue">5</span>
       </div>
       <div class="button-row">
         <button onclick="saveMix()">💾 Save</button>
@@ -79,19 +94,11 @@
     <div class="saved-section">
       <div class="section-title">📁 Saved Mixes</div>
       <div id="savedMixes" class="saved-list"></div>
-    </div>
-  </div>
-
-  <!-- Color Picker Modal -->
-  <div id="colorPickerModal" class="modal" style="display:none;">
-    <div class="modal-content">
-      <label>HEX or RGB: </label>
-      <input type="text" id="colorInput" placeholder="#RRGGBB or 255,255,255" />
-      <input type="color" id="colorPreview" />
-      <div class="button-row">
-        <button onclick="applyColor()">✅ Apply</button>
-        <button onclick="closeModal()">❌ Cancel</button>
-      </div>
+	  <div class="button-row">
+  <button onclick="downloadMixes()">⬇️ Download Mixes</button>
+  <input type="file" id="uploadMixFile" accept=".json" style="display:none;" onchange="uploadMixes(event)">
+  <button onclick="document.getElementById('uploadMixFile').click()">📁 Load Mixes</button>
+</div>
     </div>
   </div>
 </body>

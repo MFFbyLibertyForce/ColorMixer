@@ -586,7 +586,15 @@ const hex = rgbToHex(resultColor);
   if (colorPicker) {
     colorPicker.value = hex;
   }
+  
+applyBearColorFromResult(resultColor.r, resultColor.g, resultColor.b);
 }
+
+function applyBearColorFromResult(r, g, b) {
+      if (typeof window.syncBearColor === 'function') {
+        window.syncBearColor(r, g, b);
+      }
+    }
 
 // HEX → RGB 변환 유틸리티
 function hexToRgbNormalized(hex) {
@@ -740,6 +748,7 @@ function hslToHex(h, s, l) {
   return "#" + [r, g, b].map(v => Math.round((v + m) * 255)
     .toString(16).padStart(2, "0")).join("");
 }
+
 
 window.addEventListener("load", () => {
   resetColors();

@@ -95,6 +95,21 @@
         </div>
       </div>
     </div>
+	
+<!-- 🧸 Bear Section -->
+<div class="bear-section" style="width: 100%; max-width: 360px; height: 420px; margin: 1rem auto; background: transparent; position: relative;">
+  <div class="controls" style="position: absolute; top: 5px; left: 5px; background: rgba(0, 0, 0, 0.6); padding: 6px 10px; border-radius: 8px; font-size: 12px; z-index: 10;">
+    <div style="margin-bottom: 4px;">
+      <label>R: <input id="rSlider" type="range" min="0" max="255" value="153" style="width: 100%;"></label>
+    </div>
+    <div style="margin-bottom: 4px;">
+      <label>G: <input id="gSlider" type="range" min="0" max="255" value="102" style="width: 100%;"></label>
+    </div>
+    <div>
+      <label>B: <input id="bSlider" type="range" min="0" max="255" value="51" style="width: 100%;"></label>
+    </div>
+  </div>
+</div>
 <!-- 🎯 Color Suggestions -->
 <div class="suggestion-section">
   <h2 class="section-title">🎯 Color Suggestions</h2>
@@ -125,5 +140,105 @@
 	
 	
   </div>
+
+
+<script type="module">
+  import * as THREE from 'https://unpkg.com/three@0.156.1/build/three.module.js';
+
+  const section = document.querySelector(".bear-section");
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, section.clientWidth / section.clientHeight, 0.1, 100);
+  camera.position.set(0, 1, 6); // 뒤로 이동
+
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  renderer.setSize(section.clientWidth, section.clientHeight);
+  renderer.setClearColor(0x000000, 0); // 투명
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  section.appendChild(renderer.domElement);
+
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.ShadowMaterial({ opacity: 0.2 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -5.2;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  const material = new THREE.MeshStandardMaterial({
+    color: new THREE.Color("rgb(153,102,51)"),
+    roughness: 0.4,
+    metalness: 0.1
+  });
+
+  function createPart(geometry, position) {
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.position.set(...position);
+    return mesh;
+  }
+
+  const bearParts = [
+    createPart(new THREE.SphereGeometry(1, 16, 16), [0, 0.75, 0]),
+    createPart(new THREE.SphereGeometry(1.2, 16, 16), [0, -1, 0]),
+    createPart(new THREE.SphereGeometry(0.3, 16, 16), [-0.6, 1.55, 0.1]),
+    createPart(new THREE.SphereGeometry(0.3, 16, 16), [0.6, 1.55, 0.1]),
+    createPart(new THREE.SphereGeometry(0.4, 16, 16), [-1.2, -0.5, 0]),
+    createPart(new THREE.SphereGeometry(0.4, 16, 16), [1.2, -0.5, 0]),
+    createPart(new THREE.SphereGeometry(0.45, 16, 16), [-0.5, -2.1, 0.3]),
+    createPart(new THREE.SphereGeometry(0.45, 16, 16), [0.5, -2.1, 0.3])
+  ];
+
+  const bear = new THREE.Group();
+  bearParts.forEach(p => bear.add(p));
+  
+  scene.add(bear);
+
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  dirLight.position.set(5, 10, 5);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.width = 1024;
+  dirLight.shadow.mapSize.height = 1024;
+  scene.add(dirLight);
+
+  scene.add(new THREE.AmbientLight(0x555555));
+
+  function animate() {
+    requestAnimationFrame(animate);
+    bear.rotation.y += 0.01;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  const rSlider = document.getElementById("rSlider");
+  const gSlider = document.getElementById("gSlider");
+  const bSlider = document.getElementById("bSlider");
+
+  function updateColor() {
+    const r = parseInt(rSlider.value);
+    const g = parseInt(gSlider.value);
+    const b = parseInt(bSlider.value);
+    material.color.setRGB(r / 255, g / 255, b / 255);
+  }
+
+  rSlider.addEventListener("input", updateColor);
+  gSlider.addEventListener("input", updateColor);
+  bSlider.addEventListener("input", updateColor);
+  
+  window.syncBearColor = function (r, g, b) {
+      rSlider.value = r;
+      gSlider.value = g;
+      bSlider.value = b;
+      material.color.setRGB(r / 255, g / 255, b / 255);
+    };
+  
+  window.addEventListener("resize", () => {
+    camera.aspect = section.clientWidth / section.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(section.clientWidth, section.clientHeight);
+  });
+</script>
 </body>
 </html>
